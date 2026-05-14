@@ -1,0 +1,370 @@
+--// REXZ LIBRARY V3 ULTIMATE
+--// RED & BLUE UI
+--// FULL FEATURES
+--// Made By Rexz
+
+local Rexz = {}
+
+function Rexz:CreateWindow(title)
+
+    local Players = game:GetService("Players")
+    local UIS = game:GetService("UserInputService")
+    local TweenService = game:GetService("TweenService")
+
+    local LocalPlayer = Players.LocalPlayer
+
+    -- GUI
+    local ScreenGui = Instance.new("ScreenGui")
+    local Main = Instance.new("Frame")
+    local Top = Instance.new("Frame")
+    local Tabs = Instance.new("Frame")
+    local Pages = Instance.new("Frame")
+
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.Name = "RexzLibrary"
+
+    -- MAIN
+    Main.Parent = ScreenGui
+    Main.Size = UDim2.new(0,720,0,420)
+    Main.Position = UDim2.new(0.5,-360,0.5,-210)
+    Main.BackgroundColor3 = Color3.fromRGB(10,10,10)
+    Main.BorderSizePixel = 0
+    Main.Active = true
+    Main.Draggable = true
+
+    Instance.new("UICorner", Main).CornerRadius = UDim.new(0,12)
+
+    local MainStroke = Instance.new("UIStroke")
+    MainStroke.Parent = Main
+    MainStroke.Color = Color3.fromRGB(0,120,255)
+    MainStroke.Thickness = 1.3
+
+    -- TOPBAR
+    Top.Parent = Main
+    Top.Size = UDim2.new(1,0,0,45)
+    Top.BackgroundColor3 = Color3.fromRGB(15,15,15)
+    Top.BorderSizePixel = 0
+
+    Instance.new("UICorner", Top).CornerRadius = UDim.new(0,12)
+
+    local Title = Instance.new("TextLabel")
+    Title.Parent = Top
+    Title.BackgroundTransparency = 1
+    Title.Size = UDim2.new(1,0,1,0)
+    Title.Font = Enum.Font.GothamBold
+    Title.Text = title or "REXZ HUB"
+    Title.TextColor3 = Color3.new(1,1,1)
+    Title.TextSize = 20
+
+    -- BLUE & RED LINE
+    local Blue = Instance.new("Frame")
+    Blue.Parent = Top
+    Blue.Size = UDim2.new(0.5,0,0,3)
+    Blue.Position = UDim2.new(0,0,1,-3)
+    Blue.BackgroundColor3 = Color3.fromRGB(0,120,255)
+    Blue.BorderSizePixel = 0
+
+    local Red = Instance.new("Frame")
+    Red.Parent = Top
+    Red.Size = UDim2.new(0.5,0,0,3)
+    Red.Position = UDim2.new(0.5,0,1,-3)
+    Red.BackgroundColor3 = Color3.fromRGB(255,50,50)
+    Red.BorderSizePixel = 0
+
+    -- TABS
+    Tabs.Parent = Main
+    Tabs.Position = UDim2.new(0,0,0,45)
+    Tabs.Size = UDim2.new(0,180,1,-45)
+    Tabs.BackgroundColor3 = Color3.fromRGB(14,14,14)
+    Tabs.BorderSizePixel = 0
+
+    local TabsLayout = Instance.new("UIListLayout")
+    TabsLayout.Parent = Tabs
+    TabsLayout.Padding = UDim.new(0,6)
+
+    -- PAGES
+    Pages.Parent = Main
+    Pages.Position = UDim2.new(0,180,0,45)
+    Pages.Size = UDim2.new(1,-180,1,-45)
+    Pages.BackgroundTransparency = 1
+
+    local Window = {}
+
+    -- CREATE TAB
+    function Window:CreateTab(name)
+
+        local TabButton = Instance.new("TextButton")
+        local Page = Instance.new("ScrollingFrame")
+        local Layout = Instance.new("UIListLayout")
+
+        TabButton.Parent = Tabs
+        TabButton.Size = UDim2.new(1,-10,0,40)
+        TabButton.Position = UDim2.new(0,5,0,0)
+        TabButton.BackgroundColor3 = Color3.fromRGB(20,20,20)
+        TabButton.Text = name
+        TabButton.Font = Enum.Font.GothamBold
+        TabButton.TextSize = 14
+        TabButton.TextColor3 = Color3.new(1,1,1)
+        TabButton.BorderSizePixel = 0
+
+        Instance.new("UICorner", TabButton).CornerRadius = UDim.new(0,8)
+
+        local Stroke = Instance.new("UIStroke")
+        Stroke.Parent = TabButton
+        Stroke.Color = Color3.fromRGB(0,120,255)
+
+        -- PAGE
+        Page.Parent = Pages
+        Page.Size = UDim2.new(1,0,1,0)
+        Page.CanvasSize = UDim2.new(0,0,0,0)
+        Page.ScrollBarThickness = 4
+        Page.BackgroundTransparency = 1
+        Page.Visible = false
+
+        Layout.Parent = Page
+        Layout.Padding = UDim.new(0,8)
+
+        Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            Page.CanvasSize = UDim2.new(0,0,0,Layout.AbsoluteContentSize.Y + 15)
+        end)
+
+        TabButton.MouseEnter:Connect(function()
+            TweenService:Create(
+                Stroke,
+                TweenInfo.new(0.2),
+                {Color = Color3.fromRGB(255,50,50)}
+            ):Play()
+        end)
+
+        TabButton.MouseLeave:Connect(function()
+            TweenService:Create(
+                Stroke,
+                TweenInfo.new(0.2),
+                {Color = Color3.fromRGB(0,120,255)}
+            ):Play()
+        end)
+
+        TabButton.MouseButton1Click:Connect(function()
+
+            for _,v in pairs(Pages:GetChildren()) do
+                if v:IsA("ScrollingFrame") then
+                    v.Visible = false
+                end
+            end
+
+            Page.Visible = true
+
+        end)
+
+        local Tab = {}
+
+        -- LABEL
+        function Tab:AddLabel(text)
+
+            local Label = Instance.new("TextLabel")
+
+            Label.Parent = Page
+            Label.Size = UDim2.new(1,-10,0,30)
+            Label.BackgroundTransparency = 1
+            Label.Text = text
+            Label.Font = Enum.Font.GothamBold
+            Label.TextColor3 = Color3.new(1,1,1)
+            Label.TextSize = 15
+
+        end
+
+        -- BUTTON
+        function Tab:AddButton(text, callback)
+
+            local Button = Instance.new("TextButton")
+
+            Button.Parent = Page
+            Button.Size = UDim2.new(1,-10,0,40)
+            Button.BackgroundColor3 = Color3.fromRGB(20,20,20)
+            Button.Text = text
+            Button.Font = Enum.Font.GothamBold
+            Button.TextColor3 = Color3.new(1,1,1)
+            Button.TextSize = 14
+            Button.BorderSizePixel = 0
+
+            Instance.new("UICorner", Button).CornerRadius = UDim.new(0,8)
+
+            local Stroke = Instance.new("UIStroke")
+            Stroke.Parent = Button
+            Stroke.Color = Color3.fromRGB(255,50,50)
+
+            Button.MouseButton1Click:Connect(function()
+                pcall(callback)
+            end)
+
+        end
+
+        -- TOGGLE
+        function Tab:AddToggle(text, default, callback)
+
+            local Enabled = default or false
+
+            local Toggle = Instance.new("TextButton")
+
+            Toggle.Parent = Page
+            Toggle.Size = UDim2.new(1,-10,0,40)
+            Toggle.BackgroundColor3 = Color3.fromRGB(20,20,20)
+            Toggle.Text = text.." : "..tostring(Enabled)
+            Toggle.Font = Enum.Font.GothamBold
+            Toggle.TextColor3 = Color3.new(1,1,1)
+            Toggle.TextSize = 14
+            Toggle.BorderSizePixel = 0
+
+            Instance.new("UICorner", Toggle).CornerRadius = UDim.new(0,8)
+
+            local Stroke = Instance.new("UIStroke")
+            Stroke.Parent = Toggle
+            Stroke.Color = Color3.fromRGB(0,120,255)
+
+            Toggle.MouseButton1Click:Connect(function()
+
+                Enabled = not Enabled
+
+                Toggle.Text = text.." : "..tostring(Enabled)
+
+                pcall(function()
+                    callback(Enabled)
+                end)
+
+            end)
+
+        end
+
+        -- TEXTBOX
+        function Tab:AddTextbox(placeholder, callback)
+
+            local Box = Instance.new("TextBox")
+
+            Box.Parent = Page
+            Box.Size = UDim2.new(1,-10,0,40)
+            Box.BackgroundColor3 = Color3.fromRGB(20,20,20)
+            Box.PlaceholderText = placeholder
+            Box.Text = ""
+            Box.Font = Enum.Font.GothamBold
+            Box.TextColor3 = Color3.new(1,1,1)
+            Box.TextSize = 14
+            Box.BorderSizePixel = 0
+
+            Instance.new("UICorner", Box).CornerRadius = UDim.new(0,8)
+
+            local Stroke = Instance.new("UIStroke")
+            Stroke.Parent = Box
+            Stroke.Color = Color3.fromRGB(255,50,50)
+
+            Box.FocusLost:Connect(function()
+
+                pcall(function()
+                    callback(Box.Text)
+                end)
+
+            end)
+
+        end
+
+        -- SLIDER
+        function Tab:AddSlider(text,min,max,start,callback)
+
+            local Value = start or min
+
+            local SliderFrame = Instance.new("Frame")
+            local SliderBtn = Instance.new("TextButton")
+            local Fill = Instance.new("Frame")
+            local ValueText = Instance.new("TextLabel")
+
+            SliderFrame.Parent = Page
+            SliderFrame.Size = UDim2.new(1,-10,0,55)
+            SliderFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+            SliderFrame.BorderSizePixel = 0
+
+            Instance.new("UICorner", SliderFrame).CornerRadius = UDim.new(0,8)
+
+            local Stroke = Instance.new("UIStroke")
+            Stroke.Parent = SliderFrame
+            Stroke.Color = Color3.fromRGB(0,120,255)
+
+            ValueText.Parent = SliderFrame
+            ValueText.BackgroundTransparency = 1
+            ValueText.Size = UDim2.new(1,0,0,20)
+            ValueText.Text = text.." : "..Value
+            ValueText.Font = Enum.Font.GothamBold
+            ValueText.TextColor3 = Color3.new(1,1,1)
+            ValueText.TextSize = 14
+
+            SliderBtn.Parent = SliderFrame
+            SliderBtn.Position = UDim2.new(0,10,0,30)
+            SliderBtn.Size = UDim2.new(1,-20,0,10)
+            SliderBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+            SliderBtn.Text = ""
+
+            Instance.new("UICorner", SliderBtn).CornerRadius = UDim.new(1,0)
+
+            Fill.Parent = SliderBtn
+            Fill.Size = UDim2.new((Value-min)/(max-min),0,1,0)
+            Fill.BackgroundColor3 = Color3.fromRGB(255,50,50)
+            Fill.BorderSizePixel = 0
+
+            Instance.new("UICorner", Fill).CornerRadius = UDim.new(1,0)
+
+            SliderBtn.MouseButton1Down:Connect(function()
+
+                local Move
+                local Release
+
+                Move = UIS.InputChanged:Connect(function(input)
+
+                    if input.UserInputType == Enum.UserInputType.MouseMovement then
+
+                        local SizeScale = math.clamp(
+                            (input.Position.X - SliderBtn.AbsolutePosition.X)
+                            / SliderBtn.AbsoluteSize.X,
+                            0,1
+                        )
+
+                        Fill.Size = UDim2.new(SizeScale,0,1,0)
+
+                        Value = math.floor(((max - min) * SizeScale) + min)
+
+                        ValueText.Text = text.." : "..Value
+
+                        pcall(function()
+                            callback(Value)
+                        end)
+
+                    end
+                end)
+
+                Release = UIS.InputEnded:Connect(function(input)
+
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                        Move:Disconnect()
+                        Release:Disconnect()
+                    end
+
+                end)
+
+            end)
+
+        end
+
+        return Tab
+    end
+
+    -- INFO TAB
+    local Info = Window:CreateTab("Info")
+
+    Info:AddLabel("Library By Rexz")
+    Info:AddLabel("Executor : Delta / Fluxus / Codex")
+    Info:AddLabel("Player : "..LocalPlayer.Name)
+    Info:AddLabel("Display : "..LocalPlayer.DisplayName)
+    Info:AddLabel("UserId : "..LocalPlayer.UserId)
+    Info:AddLabel("Account Age : "..LocalPlayer.AccountAge)
+
+    return Window
+end
+
+return Rexz
